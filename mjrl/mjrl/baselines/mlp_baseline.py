@@ -16,6 +16,13 @@ class MLPBaseline:
     def __init__(self, env_spec, obs_dim=None, learn_rate=1e-3, reg_coef=0.0,
                  batch_size=64, epochs=1, use_gpu=False):
         self.n = obs_dim if obs_dim is not None else env_spec.observation_dim
+        ######################################################
+        ######################################################
+        ######################################################
+        # self.n = 27
+        ######################################################
+        ######################################################
+        ######################################################
         self.batch_size = batch_size
         self.epochs = epochs
         self.reg_coef = reg_coef

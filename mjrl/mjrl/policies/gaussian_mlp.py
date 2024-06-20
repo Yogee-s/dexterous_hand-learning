@@ -5,7 +5,13 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 
 from tpi.core.config import cfg
-
+##############################################
+##############################################
+##############################################
+import tensorflow as tf  # Import TensorFlow
+##############################################
+##############################################
+##############################################
 
 class MLP:
     def __init__(self, env_spec,
@@ -22,6 +28,7 @@ class MLP:
         """
         self.n = env_spec.observation_dim   # number of states
         self.m = env_spec.action_dim  # number of actions
+        
         self.min_log_std = min_log_std
 
         # Set seed
@@ -101,10 +108,27 @@ class MLP:
     # ============================================
     def get_action(self, observation):
         o = np.float32(observation.reshape(1, -1))
+        ###################################################################
+        ###################################################################
+        ###################################################################
+        # indexes = [0, 1, 2, 3, 4, 5, 9, 10, 13, 14, 17, 18, 22, 23, 25, 26, 28, 29]
+        # action = action[indexes]  # Select actions at specified indexes
+        ###################################################################
+        ###################################################################
+        ###################################################################
         self.obs_var.data = torch.from_numpy(o)
         mean = self.model(self.obs_var).data.numpy().ravel()
+        ###################################################################
+        ###################################################################
+        ################################################################### 
+        # print(f"self.obs_var is: \n{self.obs_var}\n")
+        # print(f"self.obs_var.data is: \n{self.obs_var.data}\n")
+        ###################################################################
+        ###################################################################
+        ###################################################################
         noise = np.exp(self.log_std_val) * np.random.randn(self.m)
         action = mean + noise
+
         return [action, {'mean': mean, 'log_std': self.log_std_val, 'evaluation': mean}]
 
     def mean_LL(self, observations, actions, model=None, log_std=None):
@@ -148,7 +172,15 @@ class MLP:
         Dr = 2 * new_std ** 2 + 1e-8
         sample_kl = torch.sum(Nr / Dr + new_log_std - old_log_std, dim=1)
         return torch.mean(sample_kl)
-
+    
+    ######################################################
+    ######################################################
+    ######################################################
+    def set_transformations(self, in_shift=None, in_scale=None, out_shift=None, out_scale=None):
+        return MuNet.set_transformations(self.model,in_shift=None, in_scale=None, out_shift=None, out_scale=None)
+    ######################################################
+    ######################################################
+    ######################################################
 
 class MuNet(nn.Module):
     def __init__(self, obs_dim, act_dim, hidden_sizes=(64,64),
@@ -160,6 +192,7 @@ class MuNet(nn.Module):
 
         self.obs_dim = obs_dim
         self.act_dim = act_dim
+
         self.hidden_sizes = hidden_sizes
         self.set_transformations(in_shift, in_scale, out_shift, out_scale)
 
@@ -178,6 +211,7 @@ class MuNet(nn.Module):
         self.in_scale  = torch.from_numpy(np.float32(in_scale)) if in_scale is not None else torch.ones(self.obs_dim)
         self.out_shift = torch.from_numpy(np.float32(out_shift)) if out_shift is not None else torch.zeros(self.act_dim)
         self.out_scale = torch.from_numpy(np.float32(out_scale)) if out_scale is not None else torch.ones(self.act_dim)
+
         self.in_shift  = Variable(self.in_shift, requires_grad=False)
         self.in_scale  = Variable(self.in_scale, requires_grad=False)
         self.out_shift = Variable(self.out_shift, requires_grad=False)

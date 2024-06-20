@@ -11,8 +11,8 @@ from torch.autograd import Variable
 import copy
 
 # samplers
-import mjrl.samplers.trajectory_sampler as trajectory_sampler
-import mjrl.samplers.batch_sampler as batch_sampler
+# import mjrl.samplers.trajectory_sampler as trajectory_sampler
+# import mjrl.samplers.batch_sampler as batch_sampler
 
 # utility functions
 import mjrl.utils.process_samples as process_samples
@@ -21,7 +21,7 @@ from mjrl.utils.cg_solve import cg_solve
 
 # Import Algs
 from mjrl.algos.npg_cg import NPG
-from mjrl.algos.behavior_cloning import BC
+# from mjrl.algos.behavior_cloning import BC
 
 from tpi.core.config import cfg
 
@@ -55,12 +55,14 @@ class DAPG(NPG):
         if save_logs: self.logger = DataLog()
 
     def train_from_paths(self, paths):
-        obs_indexes = [0, 1, 2, 3, 4, 5, 9, 10, 13, 14, 17, 18, 22, 23, 25, 27, 28, 29,30,31,32,33,34,35,36,37,38]
-        act_indexes = [0, 1, 2, 3, 4, 5, 9, 10, 13, 14, 17, 18, 22, 23, 25, 27, 28, 29]
-
+        ##############################################################
+        ##############################################################
+        ##############################################################
+        obs_indexes = [0, 1, 2, 3, 4, 5, 9, 10, 13, 14, 17, 18, 22, 23, 25, 26, 28, 29,30,31,32,33,34,35,36,37,38]
+        act_indexes = [0, 1, 2, 3, 4, 5, 9, 10, 13, 14, 17, 18, 22, 23, 25, 26, 28, 29]
         # Concatenate from all the trajectories
         observations = np.concatenate([path["observations"] for path in paths])
-        actions = np.concatenate([path["actions"][:, act_indexes] for path in paths])
+        actions = np.concatenate([path["actions"] for path in paths])
         advantages = np.concatenate([path["advantages"] for path in paths])
         advantages = (advantages - np.mean(advantages)) / (np.std(advantages) + 1e-6)
 
@@ -74,9 +76,15 @@ class DAPG(NPG):
             all_act = np.concatenate([actions, demo_act])
             all_adv = cfg.DAPG_ADV_W * np.concatenate([advantages/(np.std(advantages) + 1e-8), demo_adv])
         else:
+            # all_obs = observations[:, obs_indexes]
+            # all_act = actions[:, act_indexes]
+            # all_adv = advantages[:, act_indexes]
             all_obs = observations
             all_act = actions
             all_adv = advantages
+        ##############################################################
+        ##############################################################
+        ##############################################################
 
         # # Concatenate from all the trajectories
         # observations = np.concatenate([path["observations"] for path in paths])

@@ -12,6 +12,13 @@ import time as timer
 import os
 import shutil
 import copy
+##############################################
+##############################################
+##############################################
+import tensorflow as tf  # Import TensorFlow
+##############################################
+##############################################
+##############################################
 
 def train_agent(job_name, agent,
                 seed = 0,
@@ -25,6 +32,14 @@ def train_agent(job_name, agent,
                 save_freq = 10,
                 evaluation_rollouts = None,
                 plot_keys = ['stoc_pol_mean'],
+                ################################
+                ################################
+                ################################
+                train_summary_writer= None,
+                eval_summary_writer = None
+                ################################
+                ################################
+                ################################
                 ):
 
     np.random.seed(seed)
@@ -34,7 +49,6 @@ def train_agent(job_name, agent,
     with open(cfg_file, 'w') as f:
         cfg.dump(stream=f)
     previous_dir = os.getcwd()
-    #print(f'previous dir: {previous_dir}')
     if os.path.isfile('mug_poses.npy'):
         shutil.copyfile('mug_poses.npy', f'{job_dir}/mug_poses.npy')
     
@@ -52,6 +66,21 @@ def train_agent(job_name, agent,
     if cfg.INVDYN_ONPG_DUMP_INIT:
         pickle.dump(agent.policy, open('iterations/initial_policy.pickle', 'wb'))
 
+    #################################################################################
+    #################################################################################
+    #################################################################################
+    # Set up TensorBoard writer
+    # train_log_dir = os.path.join(job_dir, 'tensorboard_logs/train')
+    # eval_log_dir = os.path.join(job_dir, 'tensorboard_logs/eval')
+    # train_summary_writer = tf.summary.create_file_writer(train_log)
+    # eval_summary_writer = tf.summary.create_file_writer(eval_log)
+
+    # # Log the model architecture
+    # tf.summary.trace_on(graph=True, profiler=True)
+    #################################################################################
+    #################################################################################
+    #################################################################################
+
     for i in range(niter):
         print("......................................................................................")
         print("ITERATION : %i " % i)
@@ -62,13 +91,32 @@ def train_agent(job_name, agent,
         args = dict(N=N, sample_mode=sample_mode, gamma=gamma, gae_lambda=gae_lambda, num_cpu=num_cpu)
         stats = agent.train_step(**args)
         train_curve[i] = stats[0]
+        
+        #################################################################################
+        #################################################################################
+        #################################################################################
+        with train_summary_writer.as_default():
+            tf.summary.scalar('train_curve', train_curve[i], step=i)
+        #################################################################################
+        #################################################################################
+        #################################################################################
+
         if evaluation_rollouts is not None and evaluation_rollouts > 0:
             print("Performing evaluation rollouts ........")
             eval_paths = sample_paths_parallel(N=evaluation_rollouts, policy=agent.policy, num_cpu=num_cpu,
                                                env_name=e.env_id, mode='evaluation', pegasus_seed=seed)
             mean_pol_perf = np.mean([np.sum(path['rewards']) for path in eval_paths])
+            #################################################################################
+            #################################################################################
+            #################################################################################
+            with eval_summary_writer.as_default():
+                tf.summary.scalar('mean_pol_perf', mean_pol_perf, step=i)
+            #################################################################################
+            #################################################################################
+            #################################################################################
             if agent.save_logs:
                 agent.logger.log_kv('eval_score', mean_pol_perf)
+
         if i % save_freq == 0 and i > 0:
             if agent.save_logs:
                 agent.logger.save_log('logs/')
@@ -109,10 +157,15 @@ def train_agent(job_name, agent,
             print_data = sorted(filter(lambda v: np.asarray(v[1]).size == 1,
                                        agent.logger.get_current_log().items()))
             print(tabulate(print_data))
+    
+
 
     # final save
     pickle.dump(best_policy, open('iterations/best_policy.pickle', 'wb'))
     if agent.save_logs:
         agent.logger.save_log('logs/')
         make_train_plots(log=agent.logger.log, keys=plot_keys, save_loc='logs/')
+
     os.chdir(previous_dir)
+
+

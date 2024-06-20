@@ -11,8 +11,8 @@ from torch.autograd import Variable
 import copy
 
 # samplers
-import mjrl.samplers.trajectory_sampler as trajectory_sampler
-import mjrl.samplers.batch_sampler as batch_sampler
+# import mjrl.samplers.trajectory_sampler as trajectory_sampler
+# import mjrl.samplers.batch_sampler as batch_sampler
 
 # utility functions
 import mjrl.utils.process_samples as process_samples
