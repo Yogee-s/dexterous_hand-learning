@@ -20,7 +20,7 @@ class MLP:
         :param init_log_std: initial log standard deviation
         :param seed: random seed
         """
-        self.n = env_spec.observation_dim  # number of states
+        self.n = env_spec.observation_dim   # number of states
         self.m = env_spec.action_dim  # number of actions
         self.min_log_std = min_log_std
 

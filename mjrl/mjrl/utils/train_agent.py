@@ -83,7 +83,7 @@ def train_agent(job_name, agent,
                 pickle.dump(agent.inverse_model, open('iterations/' + inverse_file, 'wb'))
             except:
                 pass
-            if cfg.USE_INVDYN_ONPG:
+            if cfg.USE_INVDYN_ONPG:                                                                                                                   
                 for k in range(cfg.INVDYN_ONPG_ENS_N):
                     invdyn_file = 'invdyn_m{}_{}.pickle'.format(k, i)
                     invdyn_model_data = {

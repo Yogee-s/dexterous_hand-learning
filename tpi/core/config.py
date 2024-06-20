@@ -98,7 +98,14 @@ _C.INVDYN_ONPG_TEST_N = 500
 _C.INVDYN_ONPG_VAL = False
 _C.INVDYN_ONPG_VAL_N = 40
 _C.INVDYN_ONPG_NORM = False
+########################################
+########################################
+########################################
 _C.INVDYN_ONPG_SUBSET = False
+# _C.INVDYN_ONPG_SUBSET = True
+########################################
+########################################
+########################################
 _C.INVDYN_ONPG_DEBUG_STATS = False
 _C.INVDYN_ONPG_DUMP_INIT = False
 _C.INVDYN_ONPG_AGG = False
@@ -108,7 +115,14 @@ _C.INVDYN_ONPG_TT = False
 _C.INVDYN_ONPG_FREEZE = False
 _C.INVDYN_ONPG_LONG_N = 0
 _C.INVDYN_ONPG_LONG_N_MUL = 5
+########################################
+########################################
+########################################
 _C.INVDYN_ONPG_ACT_SUBSET = False
+# _C.INVDYN_ONPG_ACT_SUBSET = True
+########################################
+########################################
+########################################
 
 # Offline inverse dynamics model options
 _C.USE_INVDYN_OFPG = False
@@ -291,7 +305,14 @@ _C.CUSTOM_OBJ_SIZE = False
 _C.CUSTOM_OBJ_SIZE_MUL = 1.0
 
 # Custom fingers
+########################################
+########################################
+########################################
 _C.CUSTOM_FINGERS = False
+# _C.CUSTOM_FINGERS = True
+########################################
+########################################
+########################################
 _C.CUSTOM_FINGERS_MASK = '11111'
 
 # Checkpoints
@@ -315,8 +336,16 @@ def assert_cfg():
         'Demo file not found: {}'.format(cfg.DEMO_FILE)
     assert (_C.SDAPG_OBS_L == 0) or _C.SDAPG_DIST in ['h_dtw', 'mp_dtw'], \
         'Using obs left ind and {} dist not supported'.format(_C.SDAPG_DIST)
+    ########################################
+    ########################################
+    ########################################
     assert (_C.SDAPG_OBS_R == 39) or _C.SDAPG_DIST in ['h_dtw', 'mp_dtw'], \
         'Using obs right ind and {} dist not supported'.format(_C.SDAPG_DIST)
+    # assert (_C.SDAPG_OBS_R == 27) or _C.SDAPG_DIST in ['h_dtw', 'mp_dtw'], \
+    #     'Using obs right ind and {} dist not supported'.format(_C.SDAPG_DIST)   
+    ########################################
+    ########################################
+    ########################################
     assert 0.0 <= _C.DENSITY_ONPG_POS_FRAC <= 1.0, \
         'Positives fraction must be in [0, 1]'
     assert not _C.CUSTOM_OBJECT or _C.ENV_NAME == 'relocate-v0', \
