@@ -58,34 +58,8 @@ class DAPG(NPG):
         ##############################################################
         ##############################################################
         ##############################################################
-        obs_indexes = [0, 1, 2, 3, 4, 5, 9, 10, 13, 14, 17, 18, 22, 23, 25, 26, 28, 29,30,31,32,33,34,35,36,37,38]
-        act_indexes = [0, 1, 2, 3, 4, 5, 9, 10, 13, 14, 17, 18, 22, 23, 25, 26, 28, 29]
-        # Concatenate from all the trajectories
-        observations = np.concatenate([path["observations"] for path in paths])
-        actions = np.concatenate([path["actions"] for path in paths])
-        advantages = np.concatenate([path["advantages"] for path in paths])
-        advantages = (advantages - np.mean(advantages)) / (np.std(advantages) + 1e-6)
-
-        if self.demo_paths is not None and self.lam_0 > 0.0:
-            demo_obs = np.concatenate([path["observations"][:, obs_indexes] for path in self.demo_paths])
-            demo_act = np.concatenate([path["actions"][:, act_indexes] for path in self.demo_paths])
-            demo_adv = self.lam_0 * (self.lam_1 ** self.iter_count) * np.ones(demo_obs.shape[0])
-            self.iter_count += 1
-            # concatenate all
-            all_obs = np.concatenate([observations, demo_obs])
-            all_act = np.concatenate([actions, demo_act])
-            all_adv = cfg.DAPG_ADV_W * np.concatenate([advantages/(np.std(advantages) + 1e-8), demo_adv])
-        else:
-            # all_obs = observations[:, obs_indexes]
-            # all_act = actions[:, act_indexes]
-            # all_adv = advantages[:, act_indexes]
-            all_obs = observations
-            all_act = actions
-            all_adv = advantages
-        ##############################################################
-        ##############################################################
-        ##############################################################
-
+        # obs_indexes = [0, 1, 2, 3, 4, 5, 9, 10, 13, 14, 17, 18, 22, 23, 25, 26, 28, 29,30,31,32,33,34,35,36,37,38]
+        # act_indexes = [0, 1, 2, 3, 4, 5, 9, 10, 13, 14, 17, 18, 22, 23, 25, 26, 28, 29]
         # # Concatenate from all the trajectories
         # observations = np.concatenate([path["observations"] for path in paths])
         # actions = np.concatenate([path["actions"] for path in paths])
@@ -93,8 +67,8 @@ class DAPG(NPG):
         # advantages = (advantages - np.mean(advantages)) / (np.std(advantages) + 1e-6)
 
         # if self.demo_paths is not None and self.lam_0 > 0.0:
-        #     demo_obs = np.concatenate([path["observations"] for path in self.demo_paths])
-        #     demo_act = np.concatenate([path["actions"] for path in self.demo_paths])
+        #     demo_obs = np.concatenate([path["observations"][:, obs_indexes] for path in self.demo_paths])
+        #     demo_act = np.concatenate([path["actions"][:, act_indexes] for path in self.demo_paths])
         #     demo_adv = self.lam_0 * (self.lam_1 ** self.iter_count) * np.ones(demo_obs.shape[0])
         #     self.iter_count += 1
         #     # concatenate all
@@ -102,9 +76,35 @@ class DAPG(NPG):
         #     all_act = np.concatenate([actions, demo_act])
         #     all_adv = cfg.DAPG_ADV_W * np.concatenate([advantages/(np.std(advantages) + 1e-8), demo_adv])
         # else:
+        #     # all_obs = observations[:, obs_indexes]
+        #     # all_act = actions[:, act_indexes]
+        #     # all_adv = advantages[:, act_indexes]
         #     all_obs = observations
         #     all_act = actions
         #     all_adv = advantages
+        ##############################################################
+        ##############################################################
+        ##############################################################
+
+        # Concatenate from all the trajectories
+        observations = np.concatenate([path["observations"] for path in paths])
+        actions = np.concatenate([path["actions"] for path in paths])
+        advantages = np.concatenate([path["advantages"] for path in paths])
+        advantages = (advantages - np.mean(advantages)) / (np.std(advantages) + 1e-6)
+
+        if self.demo_paths is not None and self.lam_0 > 0.0:
+            demo_obs = np.concatenate([path["observations"] for path in self.demo_paths])
+            demo_act = np.concatenate([path["actions"] for path in self.demo_paths])
+            demo_adv = self.lam_0 * (self.lam_1 ** self.iter_count) * np.ones(demo_obs.shape[0])
+            self.iter_count += 1
+            # concatenate all
+            all_obs = np.concatenate([observations, demo_obs])
+            all_act = np.concatenate([actions, demo_act])
+            all_adv = cfg.DAPG_ADV_W * np.concatenate([advantages/(np.std(advantages) + 1e-8), demo_adv])
+        else:
+            all_obs = observations
+            all_act = actions
+            all_adv = advantages
 
         # cache return distributions for the paths
         path_returns = [sum(p["rewards"]) for p in paths]
