@@ -104,20 +104,6 @@ class BatchREINFORCE:
 
     # ----------------------------------------------------------
     def train_from_paths(self, paths):
-        ##########################################################
-        ##########################################################
-        ##########################################################
-        # obs_indexes = [0, 1, 2, 3, 4, 5, 9, 10, 13, 14, 17, 18, 22, 23, 25, 26, 28, 29,30,31,32,33,34,35,36,37,38]
-        # act_indexes = [0, 1, 2, 3, 4, 5, 9, 10, 13, 14, 17, 18, 22, 23, 25, 26, 28, 29]
-        # # Concatenate from all the trajectories
-        # observations = np.concatenate([path["observations"][:, obs_indexes] for path in paths])
-        # actions = np.concatenate([path["actions"][:, act_indexes] for path in paths])
-        # advantages = np.concatenate([path["advantages"] for path in paths])
-        # # Advantage whitening
-        # advantages = (advantages - np.mean(advantages)) / (np.std(advantages) + 1e-6)
-        ##########################################################
-        ##########################################################
-        ##########################################################
 
         # Concatenate from all the trajectories
         observations = np.concatenate([path["observations"] for path in paths])
