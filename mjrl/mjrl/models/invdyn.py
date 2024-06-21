@@ -25,7 +25,7 @@ class InvDynMLP(nn.Module):
                 self.obs_dim = 36
             elif cfg.ENV_NAME == 'door-v0':
                 self.obs_dim = 30
-            elif cfg.ENV_NAME == 'relocate-v0':
+            elif 'relocate' in cfg.ENV_NAME: # cfg.ENV_NAME == 'relocate-v0
                 ###############################################################
                 ###############################################################
                 ###############################################################
