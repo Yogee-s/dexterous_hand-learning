@@ -356,8 +356,16 @@ def assert_cfg():
         'Using custom object mass supported only with relocate'
     assert not _C.CUSTOM_OBJ_SIZE or _C.ENV_NAME == 'relocate-v0', \
         'Using custom object size supported only with relocate'
-    assert not _C.CUSTOM_FINGERS or _C.ENV_NAME == 'relocate-v0', \
+    ########################################
+    ########################################
+    ########################################
+    # assert not _C.CUSTOM_FINGERS or _C.ENV_NAME == 'relocate-v0', \
+    #     'Using custom fingers supported only with relocate'
+    assert not _C.CUSTOM_FINGERS or ('relocate' in _C.ENV_NAME), \
         'Using custom fingers supported only with relocate'
+    ########################################
+    ########################################
+    ########################################
     assert not _C.INVDYN_ONPG_ACT_SUBSET or _C.CUSTOM_FINGERS, \
         'Using action subset expects custom fingers'
     assert not _C.INVDYN_ONPG_INC_D, 'Deprecated config option'
