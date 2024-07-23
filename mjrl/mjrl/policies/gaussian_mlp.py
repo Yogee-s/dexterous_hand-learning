@@ -176,8 +176,8 @@ class MLP:
     ######################################################
     ######################################################
     ######################################################
-    def set_transformations(self, in_shift=None, in_scale=None, out_shift=None, out_scale=None):
-        return MuNet.set_transformations(self.model,in_shift=None, in_scale=None, out_shift=None, out_scale=None)
+    # def set_transformations(self, in_shift=None, in_scale=None, out_shift=None, out_scale=None):
+    #     return MuNet.set_transformations(self.model,in_shift=None, in_scale=None, out_shift=None, out_scale=None)
     ######################################################
     ######################################################
     ######################################################

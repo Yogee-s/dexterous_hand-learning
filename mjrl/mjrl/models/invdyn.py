@@ -30,7 +30,7 @@ class InvDynMLP(nn.Module):
                 ###############################################################
                 ###############################################################
                 # self.obs_dim = 30
-                self.obs_dim = 27
+                self.obs_dim = 22
             elif cfg.ENV_NAME == 'pen-v0':
                 self.obs_dim = 24
             else:
